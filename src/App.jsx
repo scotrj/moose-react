@@ -125,6 +125,11 @@ function App() {
             .filter((row) => {
               let found_keys = {};
 
+              // Avoid displaying all results when opening the page
+              if (checked_keys.size == 0)
+                return false;
+
+              // Keep track of which data entries (row) matched the key/value of the user-selected checked_keyes
               for (const checked_key of checked_keys) {
                 const [checked_key_name, checked_key_value] =
                   checked_key.split(":");
@@ -133,6 +138,8 @@ function App() {
                   found_keys[checked_key_name] = true;
               }
 
+              // If any of the of the keys were not in the data entry with the right value
+              // then exclude the data entry. For that key, it did not have the right value.
               for (const checked_key of checked_keys) {
                 const [checked_key_name, checked_key_value] =
                   checked_key.split(":");
