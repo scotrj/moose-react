@@ -9,6 +9,7 @@ import {
   Drawer,
   FormControlLabel,
   FormGroup,
+  Link,
   List,
   ListItem,
   Toolbar,
@@ -122,14 +123,29 @@ function App() {
         <List>
           {data.data
             .filter((row) => {
-              for (const key in row.key_vals)
-                if (checked_keys.has(`${key}:${row.key_vals[key]}`))
-                  return true;
+              let found_keys = {};
 
-              return false;
+              for (const checked_key of checked_keys) {
+                const [checked_key_name, checked_key_value] =
+                  checked_key.split(":");
+
+                if (row.key_vals[checked_key_name] == checked_key_value)
+                  found_keys[checked_key_name] = true;
+              }
+
+              for (const checked_key of checked_keys) {
+                const [checked_key_name, checked_key_value] =
+                  checked_key.split(":");
+
+                if (!found_keys[checked_key_name]) return false;
+              }
+
+              return true;
             })
             .map((row) => (
-              <ListItem>{row.name}</ListItem>
+              <ListItem>
+                <Link href={row.link}>{row.name}</Link>
+              </ListItem>
             ))}
         </List>
       </Box>
