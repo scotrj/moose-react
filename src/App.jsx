@@ -26,7 +26,8 @@ const data = {
     {
       name: "MoosePage2",
       path: "moose/modules/heat_conduction/doc/content/modules/heat_conduction/index.md",
-      key_vals: { keyheat: "valheat", key: "val", key1: "bval" },
+      link: "https://www.google.com/",
+      key_vals: { keyheat: "valheat", key: "val", key1: "eval" },
     },
     {
       name: "MoosePage3",
@@ -52,13 +53,25 @@ function App() {
   const [checked_keys, setCheckedKeys] = useState(new Set());
 
   // Build the datastructure for the menu
-  const menu_data = {};
+  const menu_data_arrays = {};
   for (const row of data.data) {
     for (const key in row.key_vals) {
-      if (!menu_data[key]) menu_data[key] = new Set();
+      if (!menu_data_arrays[key]) menu_data_arrays[key] = new Array();
 
-      menu_data[key].add(row.key_vals[key]);
+      menu_data_arrays[key].push(row.key_vals[key]);
     }
+  }
+
+  // Sort each category alphabetically
+  for (const key in menu_data_arrays)
+    menu_data_arrays[key].sort()
+
+  // Convert arrays to sets
+  const menu_data = {};
+  for (const key in menu_data_arrays) {
+    menu_data[key] = new Set();
+    for (const item of menu_data_arrays[key])
+      menu_data[key].add(item);
   }
 
   const handleCheck = (event) => {
