@@ -27,7 +27,7 @@ const data = {
       name: "MoosePage2",
       path: "moose/modules/heat_conduction/doc/content/modules/heat_conduction/index.md",
       link: "https://www.google.com/",
-      key_vals: { keyheat: "valheat", key: "val", key1: "eval" },
+      key_vals: { keyheat: "valheat;valheat3;Val4", key: "val", key1: "eval" },
     },
     {
       name: "MoosePage3",
@@ -56,9 +56,14 @@ function App() {
   const menu_data_arrays = {};
   for (const row of data.data) {
     for (const key in row.key_vals) {
+      // Create category if encountering a new one
       if (!menu_data_arrays[key]) menu_data_arrays[key] = new Array();
 
-      menu_data_arrays[key].push(row.key_vals[key]);
+      // Create new keys from the entries in the dictionary
+      // ; is the separator, so we create multiple entries if we find it
+      for (const new_key in row.key_vals[key].toString().split(";")) {
+        menu_data_arrays[key].push(row.key_vals[key].split(";")[new_key]);
+      }
     }
   }
 
@@ -142,16 +147,21 @@ function App() {
               if (checked_keys.size == 0)
                 return false;
 
-              // Keep track of which data entries (row) matched the key/value of the user-selected checked_keyes
+              // Keep track of which data entries (row) matched the key/value of the user-selected checked_keys
               for (const checked_key of checked_keys) {
                 const [checked_key_name, checked_key_value] =
                   checked_key.split(":");
 
-                if (row.key_vals[checked_key_name] == checked_key_value)
-                  found_keys[checked_key_name] = true;
+                // A given key/value pair (row.key_vals) in the input dictionary can contain multiple
+                // values. If the checked value is one of these values, we display this dictionary entry
+                if (checked_key_name in row.key_vals)
+                {
+                  if (row.key_vals[checked_key_name].toString().includes(checked_key_value))
+                    found_keys[checked_key_name] = true;
+                }
               }
 
-              // If any of the of the keys were not in the data entry with the right value
+              // If any of the keys were not in the data entry with the right value
               // then exclude the data entry. For that key, it did not have the right value.
               for (const checked_key of checked_keys) {
                 const [checked_key_name, checked_key_value] =
